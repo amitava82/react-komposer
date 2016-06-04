@@ -131,7 +131,7 @@ function compose(fn, L1, E1) {
         // XXX: In the server side environment, we need to
         // stop the subscription right away. Otherwise, it's a starting
         // point to huge subscription leak.
-        _this2._subscribe(props);
+        _this2._subscribe(props, context);
         return _this2;
       }
 
@@ -181,6 +181,9 @@ function compose(fn, L1, E1) {
         value: function _subscribe(props) {
           var _this3 = this;
 
+          var context = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+          context = context || this.context;
           this._unsubscribe();
 
           this._stop = fn(props, function (error, payload) {
@@ -195,7 +198,7 @@ function compose(fn, L1, E1) {
             } else {
               _this3.state = state;
             }
-          });
+          }, { context: context });
         }
       }, {
         key: '_unsubscribe',
@@ -232,6 +235,9 @@ function compose(fn, L1, E1) {
       }]);
       return Container;
     }(_react2.default.Component);
+    if (options.contextTypes) {
+      Container.contextTypes = options.contextTypes;
+    }
 
     return (0, _utils.inheritStatics)(Container, ChildComponent);
   };
